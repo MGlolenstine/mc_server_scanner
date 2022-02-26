@@ -51,9 +51,9 @@ pub fn get_used_ports() -> Vec<(IpAddr, u16)> {
 /// Check if the port at the local address is responding with correct data for Minecraft server.
 #[tracing::instrument]
 pub async fn is_minecraft(addr: IpAddr, port: u16) -> Result<ServerQueryResponse> {
-    #[cfg(target_os = "windows")]
+    #[cfg(unix)]
     let stream = TcpStream::connect(&SocketAddr::new(IpAddr::V4(LOCAL_IP), port)).await;
-    #[cfg(target_os = "unix")]
+    #[cfg(not(unix))]
     let stream = TcpStream::connect(&SocketAddr::new(addr, port)).await;
 
     let mut stream = if let Ok(stream) = stream {
